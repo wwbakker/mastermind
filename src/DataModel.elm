@@ -19,7 +19,7 @@ type alias Log =
 initialGameBoard : GameBoard
 initialGameBoard =
     { palette = [ Red, Blue, Green, Yellow, Grey ]
-    , currentAttempt = []
+    , currentAttempt = [ Nothing, Nothing, Nothing, Nothing, Nothing ]
     , log = []
     }
 

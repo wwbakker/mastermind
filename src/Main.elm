@@ -2,9 +2,9 @@ module Main exposing (main)
 
 import Browser
 import DataModel exposing (GameBoard, initialGameBoard)
-import Html.Styled exposing (..)
-import Html.Styled.Attributes exposing (..)
-import Visuals exposing (renderGameBoard)
+import Html.Styled exposing (Html, toUnstyled)
+import Logic exposing (Msg)
+import Visuals
 
 
 main : Program () GameBoard Msg
@@ -19,13 +19,9 @@ init =
 
 update : Msg -> GameBoard -> ( GameBoard, Cmd Msg )
 update msg gameBoard =
-    ( gameBoard, Cmd.none )
-
-
-type Msg
-    = A String
+    ( Logic.updateWithNoCommand msg gameBoard, Cmd.none )
 
 
 view : GameBoard -> Html Msg
 view gameBoard =
-    renderGameBoard gameBoard
+    Visuals.renderGameBoard gameBoard

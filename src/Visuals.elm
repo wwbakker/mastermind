@@ -4,6 +4,12 @@ import Css exposing (..)
 import DataModel exposing (..)
 import Html.Styled exposing (Html, div, text)
 import Html.Styled.Attributes exposing (css)
+import Html.Styled.Events exposing (onClick)
+import Logic
+
+
+
+--import Logic exposing (..)
 
 
 placeholder : Html msg
@@ -11,7 +17,13 @@ placeholder =
     div [] []
 
 
-renderGameBoard : GameBoard -> Html msg
+
+--renderGameBoardUnstyled : GameBoard -> VirtualDom.Node msg
+--renderGameBoardUnstyled gameBoard =
+--    toUnstyled (renderGameBoard gameBoard)
+
+
+renderGameBoard : GameBoard -> Html Logic.Msg
 renderGameBoard gameBoard =
     div []
         [ renderPalette gameBoard.palette
@@ -20,14 +32,14 @@ renderGameBoard gameBoard =
         ]
 
 
-renderPalette : Palette -> Html msg
+renderPalette : Palette -> Html Logic.Msg
 renderPalette palette =
     div [] (text "Palette: " :: List.map renderPaletteBox palette)
 
 
-renderCurrentAttempt : Attempt -> Html msg
+renderCurrentAttempt : Attempt -> Html Logic.Msg
 renderCurrentAttempt attempt =
-    renderAttempt attempt
+    div [] (List.indexedMap renderCurrentAttemptBox attempt)
 
 
 renderAttempt : Attempt -> Html msg
@@ -59,18 +71,19 @@ toBorderStyle : Border -> Style
 toBorderStyle borderType =
     case borderType of
         BlackBorder ->
-            Css.border3 (px 10) solid (rgb 0 0 0)
+            Css.border3 (px 5) solid (rgb 0 0 0)
 
         NoBorder ->
             Css.borderStyle none
 
 
-renderPaletteBox : DataModel.Color -> Html msg
+renderPaletteBox : DataModel.Color -> Html Logic.Msg
 renderPaletteBox color =
     renderBox
         [ toBorderStyle NoBorder
         , backgroundColor (colorToRgb color)
         ]
+        [ onClick (Logic.PaintColor color) ]
 
 
 renderAttemptBox : DataModel.ColorSpot -> Html msg
@@ -79,19 +92,32 @@ renderAttemptBox color =
         [ toBorderStyle BlackBorder
         , backgroundColor (colorSpotToRgb color)
         ]
+        []
 
 
-renderBox : List Style -> Html msg
-renderBox styles =
-    div
-        [ css
-            (List.append styles
-                [ display inlineBlock
-                , width (px 25)
-                , height (px 25)
-                ]
-            )
+renderCurrentAttemptBox : Logic.Index -> DataModel.ColorSpot -> Html Logic.Msg
+renderCurrentAttemptBox index color =
+    renderBox
+        [ toBorderStyle BlackBorder
+        , backgroundColor (colorSpotToRgb color)
         ]
+        [ onClick (Logic.EraseColor index) ]
+
+
+renderBox : List Style -> List (Html.Styled.Attribute msg) -> Html msg
+renderBox styles otherAttributes =
+    div
+        (List.append
+            [ css
+                (List.append styles
+                    [ display inlineBlock
+                    , width (px 25)
+                    , height (px 25)
+                    ]
+                )
+            ]
+            otherAttributes
+        )
         []
 
 
