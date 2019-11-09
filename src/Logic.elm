@@ -1,6 +1,9 @@
 module Logic exposing (..)
 
 import DataModel exposing (..)
+import List.Extra
+import Random
+import Utilities exposing (isJust)
 
 
 type alias Index =
@@ -8,14 +11,23 @@ type alias Index =
 
 
 type Msg
-    = PaintColor DataModel.Color
+    = NewSolution Solution
+    | PaintColor DataModel.Color
     | EraseColor Index
     | Submit
+
+
+generateNewSolution : Cmd Msg
+generateNewSolution =
+    Random.generate NewSolution randomSolution
 
 
 updateWithNoCommand : Msg -> GameBoard -> GameBoard
 updateWithNoCommand msg gameBoard =
     case msg of
+        NewSolution solution ->
+            { gameBoard | solution = solution }
+
         PaintColor color ->
             { gameBoard | currentAttempt = paintFirstEmptyToColorSpot color gameBoard.currentAttempt }
 
@@ -23,7 +35,36 @@ updateWithNoCommand msg gameBoard =
             { gameBoard | currentAttempt = eraseColorAtIndex index gameBoard.currentAttempt }
 
         Submit ->
-            gameBoard
+            { gameBoard | currentAttempt = emptyAttempt, log = gradeAttempt gameBoard.currentAttempt gameBoard.solution :: gameBoard.log }
+
+
+gradeAttempt : Attempt -> Solution -> PastAttempt
+gradeAttempt currentAttempt solution =
+    { attempt = currentAttempt
+    , grade = List.indexedMap (gradeSpot solution) currentAttempt
+    }
+
+
+gradeSpot : Solution -> Index -> ColorSpot -> GradeResult
+gradeSpot solution index colorSpot =
+    case List.Extra.getAt index solution of
+        Just color ->
+            if Just color == colorSpot then
+                ColorAndPositionMatch
+
+            else if List.any (\c -> Just c == colorSpot) solution then
+                ColorMatch
+
+            else
+                NoMatch
+
+        Nothing ->
+            NoMatch
+
+
+isAttemptValid : Attempt -> Bool
+isAttemptValid attempt =
+    List.all isJust attempt
 
 
 eraseColorAtIndex : Index -> Attempt -> Attempt

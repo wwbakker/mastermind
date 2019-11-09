@@ -3,7 +3,7 @@ module Main exposing (main)
 import Browser
 import DataModel exposing (GameBoard, initialGameBoard)
 import Html.Styled exposing (Html, toUnstyled)
-import Logic exposing (Msg)
+import Logic exposing (Msg, generateNewSolution)
 import Visuals
 
 
@@ -12,9 +12,9 @@ main =
     Browser.element { init = \() -> init, view = view >> toUnstyled, update = update, subscriptions = \_ -> Sub.none }
 
 
-init : ( GameBoard, Cmd message )
+init : ( GameBoard, Cmd Msg )
 init =
-    ( initialGameBoard, Cmd.none )
+    ( initialGameBoard, generateNewSolution )
 
 
 update : Msg -> GameBoard -> ( GameBoard, Cmd Msg )

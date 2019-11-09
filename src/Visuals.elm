@@ -1,9 +1,9 @@
 module Visuals exposing (..)
 
-import Css exposing (..)
+import Css exposing (Style, backgroundColor, display, height, inlineBlock, none, px, rgb, solid, width)
 import DataModel exposing (..)
-import Html.Styled exposing (Html, div, text)
-import Html.Styled.Attributes exposing (css)
+import Html.Styled exposing (Html, button, div, text)
+import Html.Styled.Attributes exposing (css, disabled)
 import Html.Styled.Events exposing (onClick)
 import Logic
 
@@ -28,8 +28,18 @@ renderGameBoard gameBoard =
     div []
         [ renderPalette gameBoard.palette
         , renderCurrentAttempt gameBoard.currentAttempt
+        , renderButton gameBoard
         , renderLog gameBoard.log
         ]
+
+
+renderButton : GameBoard -> Html Logic.Msg
+renderButton gameBoard =
+    button
+        [ onClick Logic.Submit
+        , disabled (not (Logic.isAttemptValid gameBoard.currentAttempt))
+        ]
+        [ text "submit" ]
 
 
 renderPalette : Palette -> Html Logic.Msg
@@ -54,7 +64,20 @@ renderPastAttempt pastAttempt =
 
 renderGrade : Grade -> Html msg
 renderGrade grade =
-    placeholder
+    div [] (List.map renderGradeResult grade)
+
+
+renderGradeResult : GradeResult -> Html msg
+renderGradeResult gradeResult =
+    case gradeResult of
+        ColorAndPositionMatch ->
+            text "✔"
+
+        ColorMatch ->
+            text "♦"
+
+        NoMatch ->
+            text "✗"
 
 
 renderLog : Log -> Html msg
