@@ -41,8 +41,13 @@ updateWithNoCommand msg gameBoard =
 gradeAttempt : Attempt -> Solution -> PastAttempt
 gradeAttempt currentAttempt solution =
     { attempt = currentAttempt
-    , grade = List.indexedMap (gradeSpot solution) currentAttempt
+    , grade = orderGrade (List.indexedMap (gradeSpot solution) currentAttempt)
     }
+
+
+orderGrade : Grade -> Grade
+orderGrade grade =
+    List.append (List.filter (\g -> g == ColorAndPositionMatch) grade) (List.filter (\g -> g == ColorMatch) grade)
 
 
 gradeSpot : Solution -> Index -> ColorSpot -> GradeResult

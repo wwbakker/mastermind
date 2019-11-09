@@ -10,14 +10,6 @@ import Logic
 
 
 --import Logic exposing (..)
-
-
-placeholder : Html msg
-placeholder =
-    div [] []
-
-
-
 --renderGameBoardUnstyled : GameBoard -> VirtualDom.Node msg
 --renderGameBoardUnstyled gameBoard =
 --    toUnstyled (renderGameBoard gameBoard)
@@ -25,19 +17,33 @@ placeholder =
 
 renderGameBoard : GameBoard -> Html Logic.Msg
 renderGameBoard gameBoard =
-    div []
+    div
+        [ css
+            [ Css.displayFlex
+            , Css.flexDirection Css.column
+            ]
+        ]
         [ renderPalette gameBoard.palette
-        , renderCurrentAttempt gameBoard.currentAttempt
-        , renderButton gameBoard
+        , renderAttemptAndSubmitButton gameBoard
         , renderLog gameBoard.log
         ]
 
 
-renderButton : GameBoard -> Html Logic.Msg
-renderButton gameBoard =
+renderAttemptAndSubmitButton : GameBoard -> Html Logic.Msg
+renderAttemptAndSubmitButton gameBoard =
+    div
+        []
+        [ renderCurrentAttempt gameBoard.currentAttempt
+        , renderSubmitButton gameBoard
+        ]
+
+
+renderSubmitButton : GameBoard -> Html Logic.Msg
+renderSubmitButton gameBoard =
     button
         [ onClick Logic.Submit
         , disabled (not (Logic.isAttemptValid gameBoard.currentAttempt))
+        , css [ Css.flex (Css.int 1) ]
         ]
         [ text "submit" ]
 
@@ -49,22 +55,35 @@ renderPalette palette =
 
 renderCurrentAttempt : Attempt -> Html Logic.Msg
 renderCurrentAttempt attempt =
-    div [] (List.indexedMap renderCurrentAttemptBox attempt)
+    div
+        [ css
+            [ Css.displayFlex
+            , Css.flexDirection Css.row
+            , Css.alignItems Css.stretch
+            , Css.width (Css.pct 100)
+            , Css.height (Css.em 5)
+            ]
+        ]
+        (List.indexedMap renderCurrentAttemptBox attempt)
 
 
-renderAttempt : Attempt -> Html msg
+renderAttempt : Attempt -> Html Logic.Msg
 renderAttempt attempt =
-    div [] (List.map renderAttemptBox attempt)
+    div
+        [ css [ display inlineBlock ] ]
+        (List.map renderAttemptBox attempt)
 
 
-renderPastAttempt : PastAttempt -> Html msg
+renderPastAttempt : PastAttempt -> Html Logic.Msg
 renderPastAttempt pastAttempt =
     div [] [ renderAttempt pastAttempt.attempt, renderGrade pastAttempt.grade ]
 
 
 renderGrade : Grade -> Html msg
 renderGrade grade =
-    div [] (List.map renderGradeResult grade)
+    div
+        [ css [ display inlineBlock ] ]
+        (List.map renderGradeResult grade)
 
 
 renderGradeResult : GradeResult -> Html msg
@@ -80,7 +99,7 @@ renderGradeResult gradeResult =
             text "✗"
 
 
-renderLog : Log -> Html msg
+renderLog : Log -> Html Logic.Msg
 renderLog log =
     div [] (List.map renderPastAttempt log)
 
@@ -123,6 +142,7 @@ renderCurrentAttemptBox index color =
     renderBox
         [ toBorderStyle BlackBorder
         , backgroundColor (colorSpotToRgb color)
+        , Css.flex (Css.int 1)
         ]
         [ onClick (Logic.EraseColor index) ]
 

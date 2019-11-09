@@ -1,4 +1,4 @@
-module Main exposing (main)
+module MasterMind exposing (main)
 
 import Browser
 import DataModel exposing (GameBoard, initialGameBoard)
