@@ -1,4 +1,4 @@
-module Utilities exposing (isJust)
+module Utilities exposing (count, isJust)
 
 
 isJust : Maybe a -> Bool
@@ -9,3 +9,8 @@ isJust maybe =
 
         Nothing ->
             False
+
+
+count : (a -> Bool) -> List a -> Int
+count fn list =
+    List.length (List.filter fn list)

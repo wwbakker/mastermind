@@ -69,13 +69,14 @@ type alias ColorSpot =
 
 
 type alias Grade =
-    List GradeResult
+    { colorAndPositionMatches : Int
+    , colorOnlyMatches : Int
+    }
 
 
-type GradeResult
-    = ColorAndPositionMatch
-    | ColorMatch
-    | NoMatch
+gradeFromTuple : ( Int, Int ) -> Grade
+gradeFromTuple ( cp, co ) =
+    Grade cp co
 
 
 type alias PastAttempt =

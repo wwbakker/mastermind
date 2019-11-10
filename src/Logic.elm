@@ -1,9 +1,8 @@
 module Logic exposing (..)
 
 import DataModel exposing (..)
-import List.Extra
 import Random
-import Utilities exposing (isJust)
+import Utilities exposing (count, isJust)
 
 
 type alias Index =
@@ -41,30 +40,63 @@ updateWithNoCommand msg gameBoard =
 gradeAttempt : Attempt -> Solution -> PastAttempt
 gradeAttempt currentAttempt solution =
     { attempt = currentAttempt
-    , grade = orderGrade (List.indexedMap (gradeSpot solution) currentAttempt)
+    , grade = calculateGrade currentAttempt solution
     }
 
 
-orderGrade : Grade -> Grade
-orderGrade grade =
-    List.append (List.filter (\g -> g == ColorAndPositionMatch) grade) (List.filter (\g -> g == ColorMatch) grade)
+calculateGrade : Attempt -> Solution -> Grade
+calculateGrade attempt solution =
+    gradeFromTuple
+        (sumMatches
+            (List.map (calculatePositionColorAndColorMatches attempt solution) DataModel.allColors)
+        )
 
 
-gradeSpot : Solution -> Index -> ColorSpot -> GradeResult
-gradeSpot solution index colorSpot =
-    case List.Extra.getAt index solution of
-        Just color ->
-            if Just color == colorSpot then
-                ColorAndPositionMatch
+sumMatches : List ( Int, Int ) -> ( Int, Int )
+sumMatches matches =
+    List.foldl sumPair ( 0, 0 ) matches
 
-            else if List.any (\c -> Just c == colorSpot) solution then
-                ColorMatch
 
-            else
-                NoMatch
+sumPair : ( Int, Int ) -> ( Int, Int ) -> ( Int, Int )
+sumPair ( a1, a2 ) ( b1, b2 ) =
+    ( a1 + b1, a2 + b2 )
 
-        Nothing ->
-            NoMatch
+
+calculatePositionColorAndColorMatches : Attempt -> Solution -> Color -> ( Int, Int )
+calculatePositionColorAndColorMatches attempt solution color =
+    let
+        numberOfColorAndPositionMatches =
+            countNumberOfColorAndPositionMatches attempt solution color
+
+        numberOfcolorMatches =
+            countNumberOfColorMatches attempt solution color
+    in
+    ( numberOfColorAndPositionMatches, numberOfcolorMatches - numberOfColorAndPositionMatches )
+
+
+countNumberOfColorAndPositionMatches : Attempt -> Solution -> Color -> Int
+countNumberOfColorAndPositionMatches attempt solution color =
+    count (colorAndPositionMatches color) (List.map2 Tuple.pair attempt solution)
+
+
+colorAndPositionMatches : Color -> ( ColorSpot, Color ) -> Bool
+colorAndPositionMatches color match =
+    color == Tuple.second match && Just color == Tuple.first match
+
+
+countNumberOfColorMatches : Attempt -> Solution -> Color -> Int
+countNumberOfColorMatches attempt solution color =
+    min (countNumberOfColorInAttempt color attempt) (countNumberOfColorInSolution color solution)
+
+
+countNumberOfColorInSolution : Color -> Solution -> Int
+countNumberOfColorInSolution color solution =
+    count (\c -> c == color) solution
+
+
+countNumberOfColorInAttempt : Color -> Attempt -> Int
+countNumberOfColorInAttempt color attempt =
+    count (\a -> a == Just color) attempt
 
 
 isAttemptValid : Attempt -> Bool

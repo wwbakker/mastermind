@@ -83,20 +83,10 @@ renderGrade : Grade -> Html msg
 renderGrade grade =
     div
         [ css [ display inlineBlock ] ]
-        (List.map renderGradeResult grade)
-
-
-renderGradeResult : GradeResult -> Html msg
-renderGradeResult gradeResult =
-    case gradeResult of
-        ColorAndPositionMatch ->
-            text "✔"
-
-        ColorMatch ->
-            text "♦"
-
-        NoMatch ->
-            text "✗"
+        (List.append
+            (List.repeat grade.colorAndPositionMatches (text "✔"))
+            (List.repeat grade.colorOnlyMatches (text "♦"))
+        )
 
 
 renderLog : Log -> Html Logic.Msg
@@ -191,12 +181,3 @@ colorToRgb color =
 
         Grey ->
             rgb 125 125 125
-
-
-conditionalOn : Bool -> List Style -> List Style
-conditionalOn isSelected conditionalStyle =
-    if isSelected then
-        conditionalStyle
-
-    else
-        []
