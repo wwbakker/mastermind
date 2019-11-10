@@ -4,7 +4,7 @@ import Browser
 import DataModel exposing (GameBoard, initialGameBoard)
 import Html.Styled exposing (Html, toUnstyled)
 import Logic exposing (Msg, generateNewSolution)
-import Visuals
+import Visuals.Dom
 
 
 main : Program () GameBoard Msg
@@ -24,4 +24,4 @@ update msg gameBoard =
 
 view : GameBoard -> Html Msg
 view gameBoard =
-    Visuals.renderGameBoard gameBoard
+    Visuals.Dom.renderGameBoard gameBoard

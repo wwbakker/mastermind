@@ -12,11 +12,11 @@ type alias GameBoard =
 
 
 type alias Palette =
-    List Color
+    List PinColor
 
 
 type alias Solution =
-    List Color
+    List PinColor
 
 
 type alias Log =
@@ -28,12 +28,12 @@ emptyAttempt =
     [ Nothing, Nothing, Nothing, Nothing, Nothing ]
 
 
-allColors : List Color
+allColors : List PinColor
 allColors =
     [ Red, Blue, Green, Yellow, Grey ]
 
 
-randomColor : Random.Generator Color
+randomColor : Random.Generator PinColor
 randomColor =
     Random.uniform Red [ Blue, Green, Yellow, Grey ]
 
@@ -56,7 +56,7 @@ type alias Attempt =
     List ColorSpot
 
 
-type Color
+type PinColor
     = Red
     | Blue
     | Green
@@ -65,7 +65,7 @@ type Color
 
 
 type alias ColorSpot =
-    Maybe Color
+    Maybe PinColor
 
 
 type alias Grade =

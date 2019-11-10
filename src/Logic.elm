@@ -11,7 +11,7 @@ type alias Index =
 
 type Msg
     = NewSolution Solution
-    | PaintColor DataModel.Color
+    | PaintColor PinColor
     | EraseColor Index
     | Submit
 
@@ -62,7 +62,7 @@ sumPair ( a1, a2 ) ( b1, b2 ) =
     ( a1 + b1, a2 + b2 )
 
 
-calculatePositionColorAndColorMatches : Attempt -> Solution -> Color -> ( Int, Int )
+calculatePositionColorAndColorMatches : Attempt -> Solution -> PinColor -> ( Int, Int )
 calculatePositionColorAndColorMatches attempt solution color =
     let
         numberOfColorAndPositionMatches =
@@ -74,27 +74,27 @@ calculatePositionColorAndColorMatches attempt solution color =
     ( numberOfColorAndPositionMatches, numberOfcolorMatches - numberOfColorAndPositionMatches )
 
 
-countNumberOfColorAndPositionMatches : Attempt -> Solution -> Color -> Int
+countNumberOfColorAndPositionMatches : Attempt -> Solution -> PinColor -> Int
 countNumberOfColorAndPositionMatches attempt solution color =
     count (colorAndPositionMatches color) (List.map2 Tuple.pair attempt solution)
 
 
-colorAndPositionMatches : Color -> ( ColorSpot, Color ) -> Bool
+colorAndPositionMatches : PinColor -> ( ColorSpot, PinColor ) -> Bool
 colorAndPositionMatches color match =
     color == Tuple.second match && Just color == Tuple.first match
 
 
-countNumberOfColorMatches : Attempt -> Solution -> Color -> Int
+countNumberOfColorMatches : Attempt -> Solution -> PinColor -> Int
 countNumberOfColorMatches attempt solution color =
     min (countNumberOfColorInAttempt color attempt) (countNumberOfColorInSolution color solution)
 
 
-countNumberOfColorInSolution : Color -> Solution -> Int
+countNumberOfColorInSolution : PinColor -> Solution -> Int
 countNumberOfColorInSolution color solution =
     count (\c -> c == color) solution
 
 
-countNumberOfColorInAttempt : Color -> Attempt -> Int
+countNumberOfColorInAttempt : PinColor -> Attempt -> Int
 countNumberOfColorInAttempt color attempt =
     count (\a -> a == Just color) attempt
 
@@ -118,7 +118,7 @@ eraseWhenIndexEquals i1 i2 currentColorSpot =
         currentColorSpot
 
 
-paintFirstEmptyToColorSpot : Color -> Attempt -> Attempt
+paintFirstEmptyToColorSpot : PinColor -> Attempt -> Attempt
 paintFirstEmptyToColorSpot color attempt =
     case attempt of
         (Just x) :: xs ->
