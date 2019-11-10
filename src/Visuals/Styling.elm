@@ -11,12 +11,13 @@ styleGameBoard =
     css
         [ displayFlex
         , flexDirection column
-        , width (px 980)
+        , maxWidth (px 980)
         , margin auto
         , backgroundColor (rgb 236 200 170)
         , borderRadius (px 15)
         , padding (px 20)
         , minHeight (px 768)
+        , touchAction manipulation
         ]
 
 
