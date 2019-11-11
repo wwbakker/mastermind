@@ -1,4 +1,4 @@
-#Mastermind
+# Mastermind
 A game of mastermind, built in Elm.
 
 ## The game

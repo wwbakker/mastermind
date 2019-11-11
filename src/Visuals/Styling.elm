@@ -41,6 +41,7 @@ stylePaletteBox color =
         , flex (int 1)
         , backgroundColor (colorToRgb color)
         , margin (px 10)
+        , borderRadius (px 3)
         ]
 
 
@@ -52,6 +53,8 @@ styleAttemptAndSubmitButton =
         [ displayFlex
         , flexDirection row
         , alignItems stretch
+        , backgroundColor (rgb 159 105 52)
+        , borderRadius (px 15)
         ]
 
 
@@ -77,10 +80,18 @@ styleSubmitButton : Attribute msg
 styleSubmitButton =
     css
         [ flex (int 1)
-        , margin2 (px 0) (px 10)
-        , borderRadius (px 3)
-        , backgroundColor (rgb 255 255 255)
+        , borderBottomRightRadius (px 15)
+        , borderTopRightRadius (px 15)
+        , backgroundColor transparent
+        , fontSize xxLarge
+        , color (rgb 175 175 175)
+        , enabled
+            [ color (rgb 255 255 255)
+            , backgroundColor (rgb 194 131 68)
+            ]
         , borderStyle none
+        , borderLeft3 (px 2) solid (rgb 255 255 255)
+        , padding (px 0)
         ]
 
 
@@ -101,6 +112,7 @@ stylePastAttempt =
     css
         [ displayFlex
         , flexDirection row
+        , borderBottom3 (px 1) dashed (rgb 255 255 255)
         ]
 
 
@@ -136,7 +148,6 @@ styleColorAndPositionMatch : Attribute msg
 styleColorAndPositionMatch =
     css
         [ fontSize (px 50)
-        , margin2 (px 0) (px 15)
         , color (rgb 0 100 13)
         ]
 
@@ -145,9 +156,34 @@ styleColorOnlyMatch : Attribute msg
 styleColorOnlyMatch =
     css
         [ fontSize (px 50)
-        , margin2 (px 0) (px 15)
+        , margin2 (px 0) (px 5)
         , color (rgb 255 140 0)
         ]
+
+
+
+{- [ Footer - Contains FooterItem -}
+
+
+styleFooter : Attribute msg
+styleFooter =
+    css
+        [ position fixed
+        , bottom (px 0)
+        , displayFlex
+        , flexDirection row
+        , justifyContent center
+        , width (pct 100)
+        ]
+
+
+styleFooterItem : Attribute msg
+styleFooterItem =
+    css [ margin2 (px 0) (px 25) ]
+
+
+
+{- [ General helper styles -}
 
 
 stylePin : Attribute msg

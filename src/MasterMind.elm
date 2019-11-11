@@ -24,4 +24,7 @@ update msg gameBoard =
 
 view : GameBoard -> Html Msg
 view gameBoard =
-    Visuals.Dom.renderGameBoard gameBoard
+    Html.Styled.div []
+        [ Visuals.Dom.renderGameBoard gameBoard
+        , Visuals.Dom.renderFooter
+        ]

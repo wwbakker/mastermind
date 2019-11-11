@@ -1,8 +1,8 @@
-module Visuals.Dom exposing (..)
+module Visuals.Dom exposing (renderFooter, renderGameBoard)
 
 import DataModel exposing (..)
-import Html.Styled exposing (Html, button, div, text)
-import Html.Styled.Attributes exposing (css, disabled)
+import Html.Styled exposing (Html, a, button, div, text)
+import Html.Styled.Attributes exposing (disabled, href, target)
 import Html.Styled.Events exposing (onClick)
 import Logic
 import Visuals.Styling exposing (..)
@@ -126,3 +126,24 @@ renderPin styles otherAttributes =
             otherAttributes
         )
         []
+
+
+renderFooter : Html msg
+renderFooter =
+    div
+        [ styleFooter ]
+        [ renderFooterItem "https://github.com/wwbakker/mastermind" "Source code"
+        , renderFooterItem "https://www.youtube.com/watch?v=dMHxyulGrEk" "Rules video"
+        ]
+
+
+renderFooterItem : String -> String -> Html msg
+renderFooterItem link caption =
+    div
+        [ styleFooterItem ]
+        [ a
+            [ href link
+            , target "_blank"
+            ]
+            [ text caption ]
+        ]
