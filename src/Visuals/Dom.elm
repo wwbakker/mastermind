@@ -8,13 +8,6 @@ import Logic
 import Visuals.Styling exposing (..)
 
 
-
---import Logic exposing (..)
---renderGameBoardUnstyled : GameBoard -> VirtualDom.Node msg
---renderGameBoardUnstyled gameBoard =
---    toUnstyled (renderGameBoard gameBoard)
-
-
 renderGameBoard : GameBoard -> Html Logic.Msg
 renderGameBoard gameBoard =
     div
@@ -25,6 +18,8 @@ renderGameBoard gameBoard =
         ]
 
 
+{-| AttemptAndSubmitButton -- Contains CurrentAttempt + SubmitButton
+-}
 renderAttemptAndSubmitButton : GameBoard -> Html Logic.Msg
 renderAttemptAndSubmitButton gameBoard =
     div
@@ -38,7 +33,16 @@ renderCurrentAttempt : Attempt -> Html Logic.Msg
 renderCurrentAttempt attempt =
     div
         [ styleCurrentAttempt ]
-        (List.indexedMap renderCurrentAttemptPin attempt)
+        (List.indexedMap renderCurrentAttemptSpot attempt)
+
+
+renderCurrentAttemptSpot : Logic.Index -> DataModel.ColorSpot -> Html Logic.Msg
+renderCurrentAttemptSpot index color =
+    div
+        [ styleSpot color
+        , onClick (Logic.EraseColor index)
+        ]
+        []
 
 
 renderSubmitButton : GameBoard -> Html Logic.Msg
@@ -51,9 +55,27 @@ renderSubmitButton gameBoard =
         [ text "submit" ]
 
 
+{-| Palette
+-}
 renderPalette : Palette -> Html Logic.Msg
 renderPalette palette =
     div [ stylePalette ] (List.map renderPaletteBox palette)
+
+
+renderPaletteBox : PinColor -> Html Logic.Msg
+renderPaletteBox color =
+    div
+        [ stylePaletteBox color
+        , onClick (Logic.PaintColor color)
+        ]
+        []
+
+
+{-| Log -- Contains list of PastAttempts
+-}
+renderLog : Log -> Html Logic.Msg
+renderLog log =
+    div [ styleLog ] (List.map renderPastAttempt log)
 
 
 renderPastAttempt : PastAttempt -> Html Logic.Msg
@@ -65,7 +87,7 @@ renderAttempt : Attempt -> Html Logic.Msg
 renderAttempt attempt =
     div
         [ styleAttempt ]
-        (List.map renderAttemptPin attempt)
+        (List.map renderSpot attempt)
 
 
 renderGrade : Grade -> Html msg
@@ -88,43 +110,9 @@ renderColorOnlyMatch =
     div [ styleColorOnlyMatch ] [ text "♦" ]
 
 
-renderLog : Log -> Html Logic.Msg
-renderLog log =
-    div [ styleLog ] (List.map renderPastAttempt log)
-
-
-renderPaletteBox : PinColor -> Html Logic.Msg
-renderPaletteBox color =
-    div
-        [ stylePaletteBox color
-        , onClick (Logic.PaintColor color)
-        ]
-        []
-
-
-renderAttemptPin : DataModel.ColorSpot -> Html msg
-renderAttemptPin color =
-    renderPin
-        (styleAttemptBox color)
-        []
-
-
-renderCurrentAttemptPin : Logic.Index -> DataModel.ColorSpot -> Html Logic.Msg
-renderCurrentAttemptPin index color =
-    renderPin
-        (styleCurrentAttemptPin color)
-        [ onClick (Logic.EraseColor index) ]
-
-
-renderPin : Html.Styled.Attribute msg -> List (Html.Styled.Attribute msg) -> Html msg
-renderPin styles otherAttributes =
-    div
-        (List.append
-            [ stylePin
-            , styles
-            ]
-            otherAttributes
-        )
+renderSpot : DataModel.ColorSpot -> Html msg
+renderSpot color =
+    div [ styleSpot color ]
         []
 
 

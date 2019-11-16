@@ -12,12 +12,14 @@ styleGameBoard =
         [ displayFlex
         , flexDirection column
         , maxWidth (px 980)
-        , margin auto
+        , margin2 (px 2) auto
         , backgroundColor (rgb 236 200 170)
+        , backgroundImage (linearGradient2 toTopLeft (stop <| rgb 210 190 165) (stop <| rgb 255 222 190) [])
         , borderRadius (px 15)
         , padding (px 20)
         , minHeight (px 768)
         , touchAction manipulation
+        , boxShadow3 (px 2) (px 2) (rgb 0 0 0)
         ]
 
 
@@ -68,11 +70,38 @@ styleCurrentAttempt =
         ]
 
 
-styleCurrentAttemptPin : Maybe PinColor -> Attribute msg
-styleCurrentAttemptPin color =
+styleSpot : Maybe PinColor -> Attribute msg
+styleSpot maybeColor =
+    case maybeColor of
+        Just color ->
+            stylePin color
+
+        Nothing ->
+            styleEmptySpot
+
+
+stylePin : PinColor -> Attribute msg
+stylePin color =
     css
-        [ border3 (px 5) solid (rgb 0 0 0)
-        , backgroundColor (colorSpotToRgb color)
+        [ border3 (px 0) solid (rgb 0 0 0)
+        , backgroundImage (linearGradient2 toTopLeft (stop <| colorToRgb color) (stop <| secondaryColorToRgb color) [])
+        , borderRadius (px 50)
+        , margin (px 5)
+        , width (px 75)
+        , height (px 75)
+        , boxShadow3 (px 2) (px 2) (rgb 0 0 0)
+        ]
+
+
+styleEmptySpot : Attribute msg
+styleEmptySpot =
+    css
+        [ backgroundColor (rgb 0 0 0)
+        , border3 (px 25) solid (rgb 148 90 37)
+        , width (px 25)
+        , height (px 25)
+        , borderRadius (px 50)
+        , margin (px 5)
         ]
 
 
@@ -123,13 +152,6 @@ styleAttempt =
         , flexDirection row
         , justifyContent center
         , flex (int 3)
-        ]
-
-
-styleAttemptBox : Maybe PinColor -> Attribute msg
-styleAttemptBox color =
-    css
-        [ backgroundColor (colorSpotToRgb color)
         ]
 
 
@@ -186,44 +208,39 @@ styleFooterItem =
 {- [ General helper styles -}
 
 
-stylePin : Attribute msg
-stylePin =
-    css
-        [ display inlineBlock
-        , width (px 75)
-        , height (px 75)
-        , borderWidth (px 5)
-        , borderStyle solid
-        , borderColor (rgb 0 0 0)
-        , borderRadius (px 50)
-        , margin (px 5)
-        ]
-
-
-colorSpotToRgb : Maybe PinColor -> Color
-colorSpotToRgb colorSpot =
-    case colorSpot of
-        Just color ->
-            colorToRgb color
-
-        Nothing ->
-            rgb 255 255 255
-
-
 colorToRgb : PinColor -> Color
 colorToRgb color =
     case color of
         Red ->
-            rgb 255 0 0
+            rgb 200 0 0
 
         Blue ->
-            rgb 0 0 255
+            rgb 0 0 200
 
         Green ->
-            rgb 0 255 0
+            rgb 0 200 0
 
         Yellow ->
-            rgb 255 255 0
+            rgb 200 200 0
 
         Grey ->
             rgb 125 125 125
+
+
+secondaryColorToRgb : PinColor -> Color
+secondaryColorToRgb color =
+    case color of
+        Red ->
+            rgb 255 100 100
+
+        Blue ->
+            rgb 100 100 255
+
+        Green ->
+            rgb 100 255 100
+
+        Yellow ->
+            rgb 255 255 100
+
+        Grey ->
+            rgb 175 175 175
