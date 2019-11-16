@@ -12,10 +12,18 @@ renderGameBoard : GameBoard -> Html Logic.Msg
 renderGameBoard gameBoard =
     div
         [ styleGameBoard ]
-        [ renderPalette gameBoard.palette
-        , renderAttemptAndSubmitButton gameBoard
-        , renderLog gameBoard.log
-        ]
+        (List.append
+            [ renderPalette gameBoard.palette
+            , renderAttemptAndSubmitButton gameBoard
+            , renderLog gameBoard.log
+            ]
+            (if Logic.hasPlayerWon gameBoard then
+                [ renderCongratulationsMessage ]
+
+             else
+                []
+            )
+        )
 
 
 {-| AttemptAndSubmitButton -- Contains CurrentAttempt + SubmitButton
@@ -116,6 +124,8 @@ renderSpot color =
         []
 
 
+{-| Overlays
+-}
 renderFooter : Html msg
 renderFooter =
     div
@@ -135,3 +145,10 @@ renderFooterItem link caption =
             ]
             [ text caption ]
         ]
+
+
+renderCongratulationsMessage : Html msg
+renderCongratulationsMessage =
+    div
+        [ styleCongratulationsMessage ]
+        [ text "Congratulations, you won!" ]

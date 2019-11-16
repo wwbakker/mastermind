@@ -129,3 +129,13 @@ paintFirstEmptyToColorSpot color attempt =
 
         [] ->
             []
+
+
+hasPlayerWon : GameBoard -> Bool
+hasPlayerWon gameBoard =
+    case List.head gameBoard.log of
+        Just latestAttempt ->
+            latestAttempt.grade.colorAndPositionMatches == 5
+
+        Nothing ->
+            False

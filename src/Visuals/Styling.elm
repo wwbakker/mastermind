@@ -204,6 +204,32 @@ styleFooterItem =
     css [ margin2 (px 0) (px 25) ]
 
 
+styleCongratulationsMessage : Attribute msg
+styleCongratulationsMessage =
+    let
+        w =
+            600
+
+        h =
+            100
+
+        fs =
+            50
+    in
+    css
+        [ position fixed
+        , top (pct 50)
+        , left (pct 50)
+        , width (px w)
+        , height (px h)
+        , marginLeft (px (-0.5 * w))
+        , marginTop (px (-0.5 * h))
+        , fontSize (px fs)
+        , fontFamily cursive
+        , backgroundColor transparent
+        ]
+
+
 
 {- [ General helper styles -}
 
